@@ -1,0 +1,69 @@
+CONSTANT MAX = 1000
+text        = ""          // current text buffer
+stack[MAX]  = []           // array of saved text states
+top         = -1           // stack pointer
+len         = 0            // current length of text
+
+FUNCTION PUSH(str):
+    IF top < MAX - 1 THEN
+        top = top + 1
+        stack[top] = COPY(str)
+    END IF
+END FUNCTION
+
+FUNCTION UNDO(len):
+    IF top >= 0 THEN
+        text = COPY(stack[top])
+        len  = LENGTH(text)
+        top  = top - 1
+    END IF
+END FUNCTION
+
+FUNCTION REDRAW():
+    CLEAR_SCREEN()
+    PRINT "========================================="
+    PRINT "   TEAM BGH TEXT EDITOR"
+    PRINT "========================================="
+    PRINT text
+END FUNCTION
+
+FUNCTION MAIN():
+    len = 0
+    PRINT welcome banner and instructions
+
+    LOOP FOREVER:
+        ch = READ_CHARACTER()      // no echo, no enter required
+
+        IF ch == ESC THEN
+            BREAK LOOP
+
+        ELSE IF ch == CTRL_Z THEN
+            UNDO(len)
+            REDRAW()
+
+        ELSE IF ch == BACKSPACE THEN
+            IF len > 0 THEN
+                PUSH(text)
+                len = len - 1
+                text[len] = NULL
+                REDRAW()
+            END IF
+
+        ELSE IF ch == ENTER THEN
+            PUSH(text)
+            text[len] = '\n'
+            len = len + 1
+            text[len] = NULL
+            PRINT NEWLINE
+
+        ELSE   // normal character
+            PUSH(text)
+            text[len] = ch
+            len = len + 1
+            text[len] = NULL
+            PRINT ch
+        END IF
+    END LOOP
+
+    PRINT exit/thank-you banner
+END FUNCTION

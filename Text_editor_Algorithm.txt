@@ -1,0 +1,39 @@
+Title: TEAM BGH Text Editor — Console-based text editor with Undo support
+Objective: Provide a simple console text editor that supports character input, backspace deletion, newline insertion, undo (via a stack of previous states), and exit.
+
+Steps:
+
+Initialize an empty text buffer text, an empty undo stack, and set top = -1 (stack pointer) and len = 0 (current text length).
+Display a welcome banner and instructions.
+Repeat the following until the user presses ESC:
+
+Read a single character ch from keyboard input (no Enter needed, no echo — via getch()).
+If ch == ESC (27) → break out of the loop and terminate.
+Else if ch == Ctrl+Z (26):
+
+Call Undo: pop the last saved state off the stack into text, update len.
+Redraw the screen with the restored text.
+
+
+Else if ch == Backspace (8):
+
+If len > 0: push current text onto the stack (save state), decrement len, truncate text at new length.
+Redraw the screen.
+
+
+Else if ch == Enter (13):
+
+Push current text onto the stack (save state).
+Append \n to text, increment len.
+Print a newline (no full redraw).
+
+
+Else (normal printable character):
+
+Push current text onto the stack (save state).
+Append ch to text, increment len.
+Print the character (no full redraw).
+
+
+On exit: print a thank-you/exit banner and terminate the program.
+
